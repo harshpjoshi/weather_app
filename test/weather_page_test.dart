@@ -27,13 +27,19 @@ void main() {
 
   testWidgets('WeatherPage displays weather data', (WidgetTester tester) async {
     final weatherBloc = WeatherBloc(MockGetWeather());
-    weatherBloc.emit(WeatherLoaded([
-      Weather(
-        date: '2023-10-01',
-        temperature: 20.0,
-        description: 'Clear sky',
+    weatherBloc.emit(
+      WeatherLoaded(
+        {
+          '2023-10-01': [
+            Weather(
+              date: '2023-10-01',
+              temperature: 20.0,
+              description: 'Clear sky',
+            ),
+          ],
+        },
       ),
-    ]));
+    );
 
     await tester.pumpWidget(
       MaterialApp(

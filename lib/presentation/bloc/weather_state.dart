@@ -12,7 +12,7 @@ class WeatherInitial extends WeatherState {}
 class WeatherLoading extends WeatherState {}
 
 class WeatherLoaded extends WeatherState {
-  final List<Weather> weather;
+  final Map<String, List<Weather>> weather;
 
   const WeatherLoaded(this.weather);
 

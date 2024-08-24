@@ -23,9 +23,11 @@ void main() {
     when(() => storage.read(any())).thenReturn(null);
   });
 
-  final mockWeather = [
-    Weather(date: '2024-08-24', temperature: 25, description: 'Sunny'),
-  ];
+  final mockWeather = {
+    '2024-08-24': [
+      Weather(date: '2024-08-24', temperature: 25, description: 'Sunny'),
+    ]
+  };
 
   group('WeatherBloc', () {
     blocTest<WeatherBloc, WeatherState>(

@@ -34,7 +34,16 @@ class WeatherBloc extends HydratedBloc<WeatherEvent, WeatherState> {
                 description: e['description'],
               ))
           .toList();
-      return WeatherLoaded(weather);
+
+      final weatherMap = <String, List<Weather>>{};
+      for (var weather in weather) {
+        if (!weatherMap.containsKey(weather.date)) {
+          weatherMap[weather.date] = [];
+        }
+        weatherMap[weather.date]!.add(weather);
+      }
+
+      return WeatherLoaded(weatherMap);
     } catch (_) {
       return WeatherInitial();
     }
@@ -43,14 +52,16 @@ class WeatherBloc extends HydratedBloc<WeatherEvent, WeatherState> {
   @override
   Map<String, dynamic> toJson(WeatherState state) {
     if (state is WeatherLoaded) {
+      final weatherList = state.weather.entries
+          .expand((entry) => entry.value.map((weather) => {
+                'date': weather.date,
+                'temperature': weather.temperature,
+                'description': weather.description,
+              }))
+          .toList();
+
       return {
-        'weather': state.weather
-            .map((e) => {
-                  'date': e.date,
-                  'temperature': e.temperature,
-                  'description': e.description,
-                })
-            .toList(),
+        'weather': weatherList,
       };
     }
     return {};

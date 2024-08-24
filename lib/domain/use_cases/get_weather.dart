@@ -6,7 +6,7 @@ class GetWeather {
 
   GetWeather(this.repository);
 
-  Future<List<Weather>> call(double lat, double lon) {
+  Future<Map<String, List<Weather>>> call(double lat, double lon) {
     return repository.getWeather(lat, lon);
   }
 }
