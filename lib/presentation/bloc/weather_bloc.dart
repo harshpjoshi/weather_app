@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:weather_app/domain/entities/weather.dart';
@@ -37,10 +38,12 @@ class WeatherBloc extends HydratedBloc<WeatherEvent, WeatherState> {
 
       final weatherMap = <String, List<Weather>>{};
       for (var weather in weather) {
-        if (!weatherMap.containsKey(weather.date)) {
-          weatherMap[weather.date] = [];
+        DateTime date = DateTime.parse(weather.date);
+        String dateString = DateFormat('dd MMMM yyyy').format(date);
+        if (!weatherMap.containsKey(dateString)) {
+          weatherMap[dateString] = [];
         }
-        weatherMap[weather.date]!.add(weather);
+        weatherMap[dateString]!.add(weather);
       }
 
       return WeatherLoaded(weatherMap);

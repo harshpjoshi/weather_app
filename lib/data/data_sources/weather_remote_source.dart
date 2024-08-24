@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/data/models/serializers.dart';
 import 'package:weather_app/data/models/weather_model.dart';
+import 'package:weather_app/utils/api_constants.dart';
 
 class WeatherRemoteDataSource {
   final Dio dio;
@@ -11,11 +12,11 @@ class WeatherRemoteDataSource {
   Future<Map<String, List<WeatherModel>>> fetchWeather(
       double lat, double lon) async {
     final response = await dio.get(
-      'https://api.openweathermap.org/data/2.5/forecast',
+      '${ApiConstants.baseURL}${ApiConstants.foreCast}',
       queryParameters: {
         'lat': lat,
         'lon': lon,
-        'appid': '37ea9939152496e5de6ca532f93817fd',
+        'appid': ApiConstants.appId,
       },
     );
 
