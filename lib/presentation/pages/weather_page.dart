@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/presentation/bloc/weather_bloc.dart';
@@ -10,37 +11,63 @@ class WeatherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather Forecast'),
+        title: Text('weatherForeCast'.tr()),
       ),
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           if (state is WeatherInitial) {
-            return const Center(child: Text('Please wait...'));
+            return Center(
+              child: Text(
+                'pleaseWait'.tr(),
+              ),
+            );
           } else if (state is WeatherLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is WeatherLoaded) {
             return ListView.builder(
               itemBuilder: (context, index) {
-                final weather = state.weather[index];
-                return ListTile(
-                  leading: getWeatherIcon(weather.description),
-                  title: Text(
-                    weather.date,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                final weatherMap = state.weather;
+                final dates = weatherMap.keys.toList();
+                final date = dates[index];
+                final weatherList = weatherMap[date]!;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        date,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    '${weather.temperature}°C - ${weather.description}',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                    ...weatherList.map((weather) {
+                      return ListTile(
+                        leading:
+                            CommonMethods.getWeatherIcon(weather.description),
+                        title: Text(
+                          CommonMethods.formatTime(weather.date),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${weather.temperature}°C - ${weather.description}',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 );
               },
               shrinkWrap: true,
-              itemCount: state.weather.length,
+              itemCount: state.weather.keys.length,
             );
           } else if (state is WeatherError) {
             return Center(child: Text(state.message));
@@ -55,30 +82,5 @@ class WeatherPage extends StatelessWidget {
         child: const Icon(Icons.refresh),
       ),
     );
-  }
-
-  Icon getWeatherIcon(String description) {
-    switch (description.toLowerCase()) {
-      case 'clear sky':
-        return Icon(Icons.wb_sunny, color: Colors.orange);
-      case 'few clouds':
-        return Icon(Icons.cloud, color: Colors.grey);
-      case 'scattered clouds':
-        return Icon(Icons.cloud_queue, color: Colors.grey);
-      case 'broken clouds':
-        return Icon(Icons.cloud, color: Colors.grey[700]);
-      case 'shower rain':
-        return Icon(Icons.grain, color: Colors.blue);
-      case 'rain':
-        return Icon(Icons.beach_access, color: Colors.blue);
-      case 'thunderstorm':
-        return Icon(Icons.flash_on, color: Colors.yellow);
-      case 'snow':
-        return Icon(Icons.ac_unit, color: Colors.lightBlue);
-      case 'mist':
-        return Icon(Icons.blur_on, color: Colors.grey);
-      default:
-        return Icon(Icons.wb_cloudy, color: Colors.grey);
-    }
   }
 }

@@ -8,14 +8,20 @@ class WeatherRepositoryImpl implements WeatherRepository {
   WeatherRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<Weather>> getWeather(double lat, double lon) async {
+  Future<Map<String, List<Weather>>> getWeather(double lat, double lon) async {
     final weatherModels = await remoteDataSource.fetchWeather(lat, lon);
-    return weatherModels
-        .map((model) => Weather(
-              date: model.dt_txt,
-              temperature: model.main.temp,
-              description: model.weather.first.description,
-            ))
-        .toList();
+    Map<String, List<Weather>> weatherMap = {};
+
+    weatherModels.forEach((date, models) {
+      weatherMap[date] = models
+          .map((model) => Weather(
+                date: model.dt_txt,
+                temperature: model.main.temp,
+                description: model.weather.first.description,
+              ))
+          .toList();
+    });
+
+    return weatherMap;
   }
 }

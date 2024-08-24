@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/presentation/bloc/weather_bloc.dart';
 
 class CommonMethods {
@@ -46,5 +47,35 @@ class CommonMethods {
     context
         .read<WeatherBloc>()
         .add(FetchWeather(position.latitude, position.longitude));
+  }
+
+  static Icon getWeatherIcon(String description) {
+    switch (description.toLowerCase()) {
+      case 'clear sky':
+        return const Icon(Icons.wb_sunny, color: Colors.orange);
+      case 'few clouds':
+        return const Icon(Icons.cloud, color: Colors.grey);
+      case 'scattered clouds':
+        return const Icon(Icons.cloud_queue, color: Colors.grey);
+      case 'broken clouds':
+        return Icon(Icons.cloud, color: Colors.grey[700]);
+      case 'shower rain':
+        return const Icon(Icons.grain, color: Colors.blue);
+      case 'rain':
+        return const Icon(Icons.beach_access, color: Colors.blue);
+      case 'thunderstorm':
+        return const Icon(Icons.flash_on, color: Colors.yellow);
+      case 'snow':
+        return const Icon(Icons.ac_unit, color: Colors.lightBlue);
+      case 'mist':
+        return const Icon(Icons.blur_on, color: Colors.grey);
+      default:
+        return const Icon(Icons.wb_cloudy, color: Colors.grey);
+    }
+  }
+
+  static String formatTime(String dtTxt) {
+    DateTime date = DateTime.parse(dtTxt);
+    return DateFormat('HH:mm a').format(date);
   }
 }
